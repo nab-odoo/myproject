@@ -137,12 +137,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         return filteredProducts.map(product => `
             <div class="product-card">
-                <img src="${product.image}" alt="${product.name}" class="product-image">
+                <img src="${product.image}" alt="₹{product.name}" class="product-image">
                 <div class="product-info">
-                    <div class="product-title">${product.name}</div>
-                    <div class="product-description">${product.description}</div>
-                    <div class="product-price">${product.price}</div>
-                    <div class="product-rating">${product.rating}</div>
+                    <div class="product-title">₹{product.name}</div>
+                    <div class="product-description">₹{product.description}</div>
+                    <div class="product-price">₹{product.price}</div>
+                    <div class="product-rating">₹{product.rating}</div>
                     <button class="add-to-cart">Add to Cart</button>
                 </div>
             </div>
