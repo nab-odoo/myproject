@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login / Registration | FoodieZone</title>
+  <style>
+    :root {
+      --primary: #ff5722;
+      --bg-light: #fff8f0;
+      --bg-dark: #1a1a1a;
+      --text-light: #222;
+      --text-dark: #f5f5f5;
+      --glow: #ff5722;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      transition: 0.4s ease;
+    }
+
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 5% auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.15);
+      transition: 0.3s ease;
+    }
+
+    body.dark .container {
+      background: #2b2b2b;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--primary);
+      text-shadow: 0 0 10px var(--glow);
+      animation: glow 2s infinite ease-in-out;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      background: #f9f9f9;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 10px var(--glow);
+    }
+
+    button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 12px var(--glow);
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px var(--glow);
+    }
+
+    .toggle {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .toggle a {
+      color: var(--primary);
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .switch {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+    }
+
+    .switch label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .switch input {
+      display: none;
+    }
+
+    .slider {
+      width: 50px;
+      height: 26px;
+      background: #ccc;
+      border-radius: 20px;
+      position: relative;
+      margin-left: 10px;
+      transition: background 0.3s;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      background: white;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: 0.3s;
+    }
+
+    input:checked + .slider {
+      background: var(--primary);
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(24px);
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        text-shadow: 0 0 8px var(--glow);
+      }
+      50% {
+        text-shadow: 0 0 16px var(--glow);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 🔘 Dark Mode Toggle -->
+<div class="switch">
+  <label>
+    🌙 Dark Mode
+    <input type="checkbox" onchange="toggleDark()">
+    <div class="slider"></div>
+  </label>
+</div>
+
+<!-- ✅ Login Form -->
+<div class="container" id="loginForm">
+  <h2>Login</h2>
+  <input type="text" id="loginUser" placeholder="Username">
+  <input type="password" id="loginPass" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <div class="toggle">Don’t have an account? <a onclick="switchForm('register')">Register</a></div>
+</div>
+
+<!-- ✅ Registration Form -->
+<div class="container hidden" id="registerForm">
+  <h2>Registration</h2>
+  <input type="text" id="newUser" placeholder="Username">
+  <input type="password" id="newPass" placeholder="Password">
+  <button onclick="register()">Register</button>
+  <div class="toggle">Already have an account? <a onclick="switchForm('login')">Login</a></div>
+</div>
+
+<script>
+  function switchForm(form) {
+    document.getElementById("loginForm").classList.toggle("hidden", form !== 'login');
+    document.getElementById("registerForm").classList.toggle("hidden", form !== 'register');
+  }
+
+  function toggleDark() {
+    document.body.classList.toggle("dark");
+  }
+
+  function register() {
+    const uname = document.getElementById("newUser").value.trim();
+    const pass = document.getElementById("newPass").value.trim();
+
+    if (!uname || !pass) return alert("Please fill in all fields.");
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    if (users.find(u => u.username === uname)) return alert("Username already exists!");
+
+    users.push({ username: uname, password: pass });
+    localStorage.setItem("users", JSON.stringify(users));
+    alert("Registration successful!");
+    switchForm('login');
+  }
+
+  function login() {
+    const uname = document.getElementById("loginUser").value.trim();
+    const pass = document.getElementById("loginPass").value.trim();
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    const user = users.find(u => u.username === uname && u.password === pass);
+
+    if (user) {
+      alert("Login successful!");
+      // redirect to your dashboard or main page
+      window.location.href = "order.html";
+    } else {
+      alert("Login failed. Check your credentials.");
+    }
+  }
+</script>
+
+</body>
+</html>

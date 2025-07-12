@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register | eCloth</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f9f9f9, #ddd);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .register-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 1rem;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #ff5722;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #e64a19;
+    }
+    p {
+      text-align: center;
+    }
+    a {
+      color: #ff5722;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-box">
+    <h2>Create Account</h2>
+    <form id="registerForm">
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="email" id="email" placeholder="Email Address" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <input type="text" id="phone" placeholder="Phone Number" required />
+      <input type="text" id="address" placeholder="Address" required />
+      <button type="submit">Register</button>
+    </form>
+    <p>Already have an account? <a href="l.html">Login here</a></p>
+  </div>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const user = {
+        username: document.getElementById("username").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value,
+        phone: document.getElementById("phone").value,
+        address: document.getElementById("address").value
+      };
+
+      // Save to localStorage (simulate account creation)
+      let users = JSON.parse(localStorage.getItem("ecloth_users")) || [];
+      users.push(user);
+      localStorage.setItem("ecloth_users", JSON.stringify(users));
+
+      alert("Registration successful!");
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>

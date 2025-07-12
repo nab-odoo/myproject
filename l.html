@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FoodieZone Login / Signup</title>
+  <style>
+    :root {
+      --bg-light: #fff8f0;
+      --bg-dark: #1e1e1e;
+      --text-light: #222;
+      --text-dark: #f5f5f5;
+      --primary: #ff5722;
+      --glow-color: #ff5722;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      transition: background 0.5s, color 0.5s;
+    }
+
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 5% auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      position: relative;
+      transition: background 0.5s;
+    }
+
+    body.dark .container {
+      background: #2b2b2b;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--primary);
+      text-shadow: 0 0 8px var(--glow-color);
+      animation: glow 2s infinite ease-in-out;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 10px var(--glow-color);
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      font-weight: bold;
+      border: none;
+      box-shadow: 0 0 15px var(--glow-color);
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #e64a19;
+      transform: scale(1.03);
+      box-shadow: 0 0 20px var(--glow-color);
+    }
+
+    .toggle {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .toggle a {
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .switch {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 999;
+    }
+
+    .switch label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .switch input {
+      display: none;
+    }
+
+    .slider {
+      width: 50px;
+      height: 26px;
+      background: #ccc;
+      border-radius: 20px;
+      position: relative;
+      margin-left: 10px;
+      transition: background 0.3s;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      background: white;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: 0.3s;
+    }
+
+    input:checked + .slider {
+      background: var(--primary);
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(24px);
+    }
+
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 8px var(--glow-color); }
+      50% { text-shadow: 0 0 15px var(--glow-color); }
+    }
+
+    .visible {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    #signupPage {
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    (function() {
+      emailjs.init("hGaylU2eoflDiZHMu");
+    })();
+  </script>
+</head>
+<body>
+
+<!-- Dark Mode Switch -->
+<div class="switch">
+  <label>
+    🌙 Dark Mode
+    <input type="checkbox" onchange="toggleDarkMode()" />
+    <div class="slider"></div>
+  </label>
+</div>
+
+<!-- Login Form -->
+<div class="container visible" id="loginPage">
+  <h2>Login</h2>
+  <input type="text" id="loginUser" placeholder="Username">
+  <input type="password" id="loginPass" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <div class="toggle">Don't have an account? <a onclick="switchForm()">Sign Up</a></div>
+</div>
+
+<!-- Signup Form -->
+<div class="container" id="signupPage">
+  <h2>Sign Up</h2>
+  <input type="text" id="newUsername" placeholder="New Username">
+  <input type="password" id="newPassword" placeholder="New Password">
+  <button onclick="signup()">Sign Up</button>
+  <div class="toggle">Already have an account? <a onclick="switchForm()">Login</a></div>
+</div>
+
+<script>
+  function switchForm() {
+    document.getElementById("loginPage").classList.toggle("visible");
+    document.getElementById("signupPage").classList.toggle("visible");
+  }
+
+  function signup() {
+    const uname = document.getElementById("newUsername").value.trim();
+    const pass = document.getElementById("newPassword").value.trim();
+
+    if (!uname || !pass) return alert("Please fill in all fields.");
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    if (users.find(u => u.username === uname)) return alert("Username already exists!");
+
+    users.push({ username: uname, password: pass });
+    localStorage.setItem("users", JSON.stringify(users));
+
+    emailjs.send("service_ad6vgz9", "template_bzrupmu", {
+      username: uname,
+      password: pass
+    }).then(() => {
+      alert("Signup successful and email sent!");
+      switchForm();
+    }).catch(() => {
+      alert("Signup saved but email not sent.");
+      switchForm();
+    });
+  }
+
+  function login() {
+    const uname = document.getElementById("loginUser").value.trim();
+    const pass = document.getElementById("loginPass").value.trim();
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    const user = users.find(u => u.username === uname && u.password === pass);
+    if (user) {
+      alert("Login successful!");
+      window.location.href = "order.html"; // your dashboard page
+    } else {
+      alert("Login failed!");
+    }
+  }
+
+  function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+  }
+</script>
+
+</body>
+</html>
